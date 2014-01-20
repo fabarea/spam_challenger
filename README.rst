@@ -25,9 +25,6 @@ Configuration
 	preProcessors {
 		1 {
 			class = Tx_SpamChallenger_PreProcessor_CreateSpamChallenge
-			config {
-
-			}
 		}
 	}
 
