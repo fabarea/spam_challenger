@@ -11,7 +11,7 @@ It may be less efficient than the Captcha technique but will still prevent most 
 
 * Was a User Session created?
 * How fast is the User at submitting the form?
-* Honey pot fields (todo)
+* Honey pot fields
 
 
 .. _Formhandler: http://www.typo3-formhandler.com/
@@ -33,8 +33,18 @@ Configuration
 		2 {
 			class = Tx_SpamChallenger_Validator_ValidateSpamChallenge
 			config {
+
 				# optional time limit in second - default 5 seconds
 				timeLimitInSecond = 5
+
+				honeyPotValues {
+
+					# field "foo" is expected to be NULL
+					foo =
+
+					# field "bar" is expected to stay "baz"
+					bar = baz
+				}
 			}
 		}
 	}

@@ -31,13 +31,18 @@ class Tx_SpamChallenger_Validator_ValidateSpamChallenge extends Tx_Formhandler_A
 	const TIME_LIMIT_IN_SECOND = 5;
 
 	/**
+	 * @var boolean
+	 */
+	protected $isChallengePassed;
+
+	/**
 	 * The main method called by the controller
 	 *
 	 * @param array $errors Reference to the errors array to store the errors occurred
 	 * @return boolean
 	 */
 	public function validate(&$errors) {
-		$isChallengePassed = TRUE;
+		$this->isChallengePassed = TRUE;
 
 		$contentElementIdentifier = $this->cObj->data['uid'];
 		$spamChallenge = SpamChallenge::getInstance()->generate($contentElementIdentifier);
@@ -51,18 +56,44 @@ class Tx_SpamChallenger_Validator_ValidateSpamChallenge extends Tx_Formhandler_A
 		$submittingTime = $challengeParts[2] - $sessionChallengeParts[2];
 
 		if (empty($sessionSpamChallenge)) {
-			$isChallengePassed = FALSE; // Session was not set
-			$errors['spamchallenger'][] = 'challenge';
-			$this->utilityFuncs->debugMessage('[FAILED] spam challenge: cookie not set');
+			$this->setFailChallenge('[FAILED] spam challenge: cookie not set'); // Session was not set
 		} elseif ($timeLimit > $submittingTime) {
-			$isChallengePassed = FALSE; // User was too quick
-			$errors['spamchallenger'][] = 'challenge';
-			$this->utilityFuncs->debugMessage('[FAILED] spam challenge: you were too fast');
-		} else {
-			$this->utilityFuncs->debugMessage(sprintf('[PASS] spam challenge with token "%s"', $spamChallenge));
+			$this->setFailChallenge('[FAILED] spam challenge: you were too fast'); // User was too quick...
 		}
 
-		return $isChallengePassed;
+		// It could be some honey-pot values to be checked.
+		$honeyPostValues = $this->settings['honeyPotValues.'];
+		if (!empty($honeyPostValues)) {
+			foreach ($this->settings['honeyPotValues.'] as $fieldName => $value) {
+
+				if (empty($this->gp[$fieldName])) {
+					$this->setFailChallenge(sprintf('[FAILED] field "%s" was not set. Forgotten field if your template?', $fieldName));
+				}
+
+				if ($this->gp[$fieldName] != $value) {
+					$this->setFailChallenge(sprintf('[FAILED] honey spot field "%s" does not correspond to expected value!', $fieldName));
+				}
+			}
+		}
+
+		if ($this->isChallengePassed) {
+			$this->utilityFuncs->debugMessage(sprintf('[PASS] spam challenge with token "%s"', $spamChallenge));
+		} else {
+			$errors['spamchallenger'][] = 'challenge';
+		}
+
+		return $this->isChallengePassed;
+	}
+
+	/**
+	 * Returns an instance of the current Frontend User.
+	 *
+	 * @param
+	 * @return $void
+	 */
+	protected function setFailChallenge($message) {
+		$this->isChallengePassed = FALSE;
+		$this->utilityFuncs->debugMessage($message);
 	}
 
 	/**
