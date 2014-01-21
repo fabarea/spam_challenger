@@ -56,9 +56,11 @@ class Tx_SpamChallenger_Validator_ValidateSpamChallenge extends Tx_Formhandler_A
 		$submittingTime = $challengeParts[2] - $sessionChallengeParts[2];
 
 		if (empty($sessionSpamChallenge)) {
-			$this->setFailChallenge('[FAILED] spam challenge: cookie not set'); // Session was not set
+			$this->setFailChallenge('[FAILED] cookie not set'); // Session was not set
 		} elseif ($timeLimit > $submittingTime) {
-			$this->setFailChallenge('[FAILED] spam challenge: you were too fast'); // User was too quick...
+			$this->setFailChallenge('[FAILED] you were too fast'); // User was too quick...
+		} else {
+			$this->utilityFuncs->debugMessage('[PASS] spam challenge is OK');
 		}
 
 		// It could be some honey-pot values to be checked.
@@ -66,19 +68,17 @@ class Tx_SpamChallenger_Validator_ValidateSpamChallenge extends Tx_Formhandler_A
 		if (!empty($honeyPostValues)) {
 			foreach ($this->settings['honeyPotValues.'] as $fieldName => $value) {
 
-				if (empty($this->gp[$fieldName])) {
-					$this->setFailChallenge(sprintf('[FAILED] field "%s" was not set. Forgotten field if your template?', $fieldName));
-				}
-
-				if ($this->gp[$fieldName] != $value) {
-					$this->setFailChallenge(sprintf('[FAILED] honey spot field "%s" does not correspond to expected value!', $fieldName));
+				if (!isset($this->gp[$fieldName])) {
+					$this->setFailChallenge(sprintf('[FAILED] honey pot field "%s" was not set. Forgotten field if your template?', $fieldName));
+				} elseif ($this->gp[$fieldName] != $value) {
+					$this->setFailChallenge(sprintf('[FAILED] honey pot field "%s" does not correspond to expected value "%s"', $fieldName, $value));
+				} else {
+					$this->setFailChallenge(sprintf('[PASS] honey pot field "%s" is OK', $fieldName, $value));
 				}
 			}
 		}
 
-		if ($this->isChallengePassed) {
-			$this->utilityFuncs->debugMessage(sprintf('[PASS] spam challenge with token "%s"', $spamChallenge));
-		} else {
+		if (!$this->isChallengePassed) {
 			$errors['spamchallenger'][] = 'challenge';
 		}
 
