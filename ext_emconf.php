@@ -12,10 +12,10 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Formhandler Spam Challenger',
-	'description' => 'Additional Components for protecting a formhandler but without captcha',
+	'description' => 'Additional Components for protecting a formhandler but without the need of a captcha.',
 	'category' => 'plugin',
 	'shy' => 0,
-	'version' => '1.0.0',
+	'version' => '1.0.0-dev',
 	'state' => 'stable',
 	'dependencies' => '',
 	'conflicts' => '',

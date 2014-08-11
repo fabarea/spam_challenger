@@ -1,0 +1,13 @@
+{
+	"name": "fab/spam-challenger",
+	"type": "typo3-cms-extension",
+	"description": "Additional Components for protecting a formhandler but without the need of a captcha.",
+	"homepage": "https://github.com/fudriot/spam_challenger",
+	"license": ["GPL-2.0+"],
+	"keywords": ["TYPO3 CMS", "spam", "protection"],
+	"support": {
+		"issues": "https://github.com/fudriot/spam_challenger/issues"
+	},
+	"version": "1.0.0-dev"
+}
+
