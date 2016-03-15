@@ -1,32 +1,26 @@
 <?php
-/* * *************************************************************
- *  Copyright notice
+namespace Ecodev\SpamChallenger\Validator;
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2014 Fabien Udriot <fabien.udriot@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- * ************************************************************* */
-use TYPO3\CMS\SpamChallenger\Service\SpamChallenge;
+ * The TYPO3 project - inspiring people to share!
+ */
+
+use Ecodev\SpamChallenger\PreProcessor\CreateSpamChallenge;
+use Ecodev\SpamChallenger\Service\SpamChallenge;
+use Typoheads\Formhandler\Validator\AbstractValidator;
 
 /**
  * This finisher for user auto login after they register
  */
-class Tx_SpamChallenger_Validator_ValidateSpamChallenge extends Tx_Formhandler_AbstractValidator {
+class ValidateSpamChallenge extends AbstractValidator {
 
 	const TIME_LIMIT_IN_SECOND = 5;
 
@@ -48,7 +42,7 @@ class Tx_SpamChallenger_Validator_ValidateSpamChallenge extends Tx_Formhandler_A
 		$spamChallenge = SpamChallenge::getInstance()->generate($contentElementIdentifier);
 		$challengeParts = explode('_', $spamChallenge);
 
-		$sessionSpamChallenge = $this->getFrontendUser()->getKey('ses', Tx_SpamChallenger_PreProcessor_CreateSpamChallenge::SESSION_KEY);
+		$sessionSpamChallenge = $this->getFrontendUser()->getKey('ses', CreateSpamChallenge::SESSION_KEY);
 		$sessionChallengeParts = explode('_', $sessionSpamChallenge);
 
 		// $this->settings['langFiles'][] = 'Add new language file?'

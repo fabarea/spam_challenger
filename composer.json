@@ -1,5 +1,5 @@
 {
-	"name": "fab/spam-challenger",
+	"name": "ecodev/spam-challenger",
 	"type": "typo3-cms-extension",
 	"description": "Additional Components for protecting a formhandler but without the need of a captcha.",
 	"homepage": "https://github.com/fudriot/spam_challenger",
@@ -8,6 +8,14 @@
 	"support": {
 		"issues": "https://github.com/fudriot/spam_challenger/issues"
 	},
-	"version": "1.0.0-dev"
+	"autoload": {
+		"psr-4": {
+			"Ecodev\\SpamChallenger\\": "Classes/"
+		}
+	},
+	"replace": {
+		"spam_challenger": "self.version",
+		"typo3-ter/spam_challenger": "self.version"
+	}
 }
 
